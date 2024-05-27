@@ -1,4 +1,4 @@
-//  Arduino Beat Detector By Damian Peckett 2015
+//  Adapted from Arduino Beat Detector By Damian Peckett 2015
 //    License: Public  Domain.
 //    https://projecthub.arduino.cc/mamifero/arduino-beat-detector-881c72
 
@@ -56,6 +56,5 @@ private:
   EnvelopeFilter envelope_filter_;
   BeatFilter beat_filter_;
 };
-
 
 #endif  // _FILTER_HPP_

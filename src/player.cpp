@@ -1,3 +1,26 @@
+// MIT License
+//
+// Copyright (c) 2024 Scott Horton
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+
 // Credit:
 //  Player control: 	"Richard Makes Escape Rooms"  product review commment on this page:
 //    https://www.amazon.com/UMLIFE-Player-Module-DFPlayer-Arduino/product-reviews/B07Y2YKYRS/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3
@@ -34,9 +57,6 @@ void Player::setup()
 Player::~Player()
 {
   send_cmd(0x0E, 0, 0, false);
-  if (serial_ptr_) {
-    delete serial_ptr_;
-  }
 }
 
 int Player::set_vol(int vol)
@@ -79,37 +99,35 @@ void Player::play_track(int folder, int track) const
 void Player::play_folder(int folder) const
 {
   // Stop if playing  
-  send_cmd(0x0E, 0, 0, false);
-  delay(200);
+  stop();
 
   // Select folder to play
   send_cmd(0xf, folder, 0, false);
   delay(200);
 
-  // Send next track cmd that begins playback
+  // Send next track cmd to begin playback
   send_cmd(0x01, 0, 0, false);
   delay(200);
 }
 
-void Player::send_cmd(int cmd, int lb, int hb, bool reply = false) const
+void Player::send_cmd(int cmd, int lb, int hb, bool reply) const
 {
   // standard format for module command stream
   uint8_t buf[] = {0x7E, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xEF};
-  int16_t chksum = 0;
-  int idx = 3; // position of first command byte
+  int idx = 3;                    // position of first command byte
 
-  buf[idx++] = (uint8_t)cmd; // inject command byte in buffer
+  buf[idx++] = (uint8_t)cmd;      // command byte
   if (reply) buf[idx++] = 0x01;
-  else buf[idx++] = 0x00;// set if reply is needed/wanted
+  else buf[idx++] = 0x00;         // set if reply is wanted
   
-  if (hb >= 0) // if there is a high byte data field
-    buf[idx++] = (uint8_t)hb; // add it to the buffer
+  if (hb >= 0)                    // conditionally add high byte data field
+    buf[idx++] = (uint8_t)hb;
 
-  if (lb >= 0) // if there is a low byte data field
-    buf[idx++] = (uint8_t)lb; // add it to the buffer
+  if (lb >= 0)                    // conditionally add low byte data field
+    buf[idx++] = (uint8_t)lb;
 
-  buf[2] = idx - 1; // inject command length into buffer
-  buf[idx++] = 0xEF; // place end-of-command byte
+  buf[2] = idx - 1;               // command length
+  buf[idx++] = 0xEF;              // end-of-command byte
 
-  serial_ptr_->write(buf, idx); // send the command to module
+  serial_ptr_->write(buf, idx);   // send the command to module
 }

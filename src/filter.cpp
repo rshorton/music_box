@@ -1,38 +1,37 @@
 #include "filter.hpp"
 #include <Arduino.h>
 
-//  defines for setting and clearing register bits
+// Defines for setting and clearing register bits
 #ifndef cbi
 #define cbi(sfr,  bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
+
 #ifndef sbi
 #define sbi(sfr,  bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
 namespace {
   // Beat detector global sample Ratte: 5000hz
-  const unsigned long SAMPLE_PERIOD_US = 200;
+  const long SAMPLE_PERIOD_US = 200;
 }
 
 Filter::Filter(int pin_audio_in, float thresh):
   pin_audio_in_(pin_audio_in),
   thresh_(thresh * 0.02f)
 {
-  // Set  ADC to 77khz, max for 10bit
+  // Set ADC to 77khz, max for 10bit
   sbi(ADCSRA,ADPS2);
   cbi(ADCSRA,ADPS1);
   cbi(ADCSRA,ADPS0);
 }  
-
 
 //  20 - 200hz Single Pole Bandpass IIR Filter
 float Filter::BassFilter::update(float sample)
 {
   xv[0] = xv[1];
   xv[1] =  xv[2]; 
-  xv[2] = (sample) / 3.f; // change here to values close to 2, to adapt  for stronger or weeker sources of line level audio  
+  xv[2] = (sample) / 3.f; // change here to values close to 2, to adapt for stronger or weeker sources of line level audio  
   
-
   yv[0] =  yv[1];
   yv[1] = yv[2]; 
   yv[2] = (xv[2] - xv[0]) + (-0.7960060012f  * yv[0]) + (1.7903124146f * yv[1]);

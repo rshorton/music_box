@@ -1,3 +1,26 @@
+// MIT License
+//
+// Copyright (c) 2024 Scott Horton
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+
 #ifndef _MUSICBOX_HPP_
 #define _MUSICBOX_HPP_
 
@@ -81,7 +104,7 @@ private:
   bool loop_ = true;
   bool egg_active_ = false;
 
-  int egg_on_start = 5;
+  int egg_on_start = 7;       // Play this clip (if present) on startup
 
   int cur_play_list_ = PLAY_LIST_A;
   PlayList play_list_sets_[2] = {PlayList(PLAY_FOLDER_A, 0), PlayList(PLAY_FOLDER_B, 0)};
@@ -94,7 +117,6 @@ private:
 
   uint8_t led_val_ = 128;
   uint8_t step_ = 20;
-
 };
 
 #endif  // _MUSICBOX_HPP_

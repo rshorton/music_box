@@ -1,3 +1,26 @@
+// MIT License
+//
+// Copyright (c) 2024 Scott Horton
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+
 #include "music_box.hpp"
 #include "log.hpp"
 #include "util.hpp"
@@ -9,9 +32,7 @@ const unsigned long PRESS_DURATION_FOR_STOP = 1000;
 const unsigned long PRESS_DURATION_VOL_REPEAT = 500;
 
 const int FIRST_TRACK_INDEX = 1;
-
 }
-
 
 MusicBox::MusicBox(int pin_sw_serial_rx, int pin_sw_serial_tx, int pin_busy_in,
                    int pin_switch_input_play_list_a, int pin_switch_input_play_list_b,
@@ -192,7 +213,6 @@ void MusicBox::update()
   }
 
   led_.update();
-
   player_update();
 
   if (egg_on_start != NO_EGG) {
@@ -207,7 +227,6 @@ void MusicBox::update()
     }
     egg_active_ = false;
   }
-  
 
   // Check input switches...
 
@@ -218,7 +237,7 @@ void MusicBox::update()
     return;
   }
 
-
+  // Playlist A used by button labeled as with music note
   bool is_playing_a = play_ && cur_play_list_ == PLAY_LIST_A;
 
   if (sw_play_list_a_.update()) {
@@ -241,6 +260,7 @@ void MusicBox::update()
     stop();
   }
 
+  // Playlist B used by button labeled with crescent moon
   bool is_playing_b = play_ && cur_play_list_ == PLAY_LIST_B;
 
   if (sw_play_list_b_.update()) {
@@ -255,6 +275,7 @@ void MusicBox::update()
         //play(PLAY_LIST_B, true, false);
       }
     }
+
   // If pressed and held long enough, then stop.    
   } else if (sw_play_list_b_.get_state() == LOW &&
              sw_play_list_b_.get_state_duration() > PRESS_DURATION_FOR_STOP) {
@@ -270,8 +291,7 @@ void MusicBox::update()
     vol_up();
   }
 
-
-  // Debug/testing supports
+  // Debug/testing support
   if (Serial.available()) {
     char ch = Serial.read();
     if (ch == '\n' || ch == '\r') {
